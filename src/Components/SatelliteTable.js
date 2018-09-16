@@ -15,7 +15,7 @@ const TableBodyContent = styled.section`
   border: 1px solid rgba(255,255,255,0.1);
 `
 
-class Table extends Component {
+class SatelliteTable extends Component {
 
   constructor(props) {
     super(props);
@@ -32,4 +32,4 @@ class Table extends Component {
   }
 }
 
-export default Table;
+export default SatelliteTable;

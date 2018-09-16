@@ -6,7 +6,7 @@ import Main from './Components/Main';
 import Footer from './Components/Footer';
 
 const Site = styled.div`
-  background-color: #282828;
+  background-color: #1C1D23;
   min-height: 1000px;
   margin: 0;
   padding: 0;
