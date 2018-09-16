@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import styled from 'styled-components';
 import Helmet from 'react-helmet';
 import Main from './Main/Main';
 
 const Site = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  min-height: 100vh;
+  background-color: #eee;
 `
 
 class App extends Component {
