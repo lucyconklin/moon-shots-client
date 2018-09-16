@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Table from '../Table/Table';
+import Table from './Table';
 import styled from 'styled-components';
 
 // const TableRow = ({row}) => (
@@ -20,6 +20,7 @@ import styled from 'styled-components';
 const Header1 = styled.h1`
   color: #7AE9B7;
   font-size: 48px;
+  text-align: center;
 `
 
 const Section = styled.section`
@@ -74,7 +75,6 @@ class Main extends Component {
   render() {
     return (
       <Section>
-        <Header1>Moon Shots</Header1>
         <input value={this.state.searchInput} onChange={evt => this.updateInputValue(evt)}/>
         <table class="sortTable">
           <tbody>

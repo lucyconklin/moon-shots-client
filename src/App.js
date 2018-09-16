@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import Helmet from 'react-helmet';
-import Main from './Main/Main';
+import Header from './Components/Header';
+import Main from './Components/Main';
+import Footer from './Components/Footer';
 
 const Site = styled.div`
   background-color: #282828;
+  min-height: 1000px;
+  margin: 0;
+  padding: 0;
+  color: #ACE464;
 `
 
 class App extends Component {
@@ -20,7 +26,9 @@ class App extends Component {
             { name: 'viewport', content: 'width=device-width, initial-scale=1'}
           ]}
         />
+        <Header />
         <Main />
+        <Footer />
       </Site>
     );
   }

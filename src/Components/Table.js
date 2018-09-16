@@ -1,4 +1,9 @@
 import React, { Component } from 'react';
+import styled from 'styled-components';
+
+const StyledTable = styled.table`
+  
+`
 
 class Table extends Component {
 
