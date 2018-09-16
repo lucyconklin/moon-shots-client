@@ -4,10 +4,11 @@ import Helmet from 'react-helmet';
 import Main from './Main/Main';
 
 const Site = styled.div`
-  background-color: #eee;
+  background-color: #282828;
 `
 
 class App extends Component {
+  
   render() {
     return (
       <Site>
