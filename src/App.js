@@ -11,6 +11,7 @@ const Site = styled.div`
   margin: 0;
   padding: 0;
   color: #ACE464;
+  font-family: 'IBM Plex Mono', monospace;
 `
 
 class App extends Component {

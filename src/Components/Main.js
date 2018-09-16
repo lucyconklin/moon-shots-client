@@ -20,6 +20,28 @@ const Section = styled.section`
   margin: 20px auto;
 `
 
+const Input = styled.input`
+  font-size: 16px;
+  background: #282828;
+  color: #F174A8;
+  padding: 8px 11px;
+  border: 2px solid #C782F5;
+  border-radius: 2px;
+  margin: 0 5px;
+  font-family: 'IBM Plex Mono', monospace;
+`
+
+const Button = styled.button`
+  font-size: 14px;
+  padding: 8px 11px;
+  background-color: #47B9DF;
+  color: #282828;
+  margin: 0 5px;
+  border: 2px solid #C782F5;
+  border-radius: 2px;
+  font-family: 'IBM Plex Mono', monospace;
+`
+
 class Main extends Component {
   constructor(props) {
     super(props);
@@ -33,13 +55,13 @@ class Main extends Component {
     };
   }
     
-  componentDidMount() {
+  componentWillMount() {
     var sort_order = this.state.sortOrder
     var attribute = this.state.sortColumn
     var search_term = this.state.searchInput
     
     var url = 'http://localhost:3000/graphql'
-    var query = "{ barrels(order: " + sort_order + ", attribute: " + attribute +" ) {id, status, last_flavor_sensor_result, error_messages} satellites {id, telemetry_timestamp} }"
+    var query = "{ barrels(order: " + sort_order + ", attribute: " + attribute +", search_term: "+ search_term + " ) {id, status, last_flavor_sensor_result, error_messages} satellites {id, telemetry_timestamp} }"
     
     fetch(url, {
       method: 'POST',
@@ -84,10 +106,10 @@ class Main extends Component {
   render() {
     return (
       <Section>
-        <input value={this.state.searchInput} onChange={evt => this.updateInputValue(evt)}/>
-        <button onClick={ evt => this.updateSortColumn("status") }>Sort by status</button>
-        <button onClick={ evt => this.updateSortColumn("time_since_last_update") }>Sort by time since last update</button>
-        <button onClick={ evt => this.updateSortColumn("error_messages") }>Sort by error_state</button>
+        <Input value={this.state.searchInput} onChange={evt => this.updateInputValue(evt)}/>
+        <Button onClick={ evt => this.updateSortColumn("status") }>Sort by status</Button>
+        <Button onClick={ evt => this.updateSortColumn("time_since_last_update") }>Sort by time since last update</Button>
+        <Button onClick={ evt => this.updateSortColumn("error_messages") }>Sort by error_state</Button>
         <TableHead headers = {["Id", "Status", "Last Flavor Sensor Result", "Errors"]}/>
         <Table rows = { this.state.barrels.map(this.eachBarrel) } />
         <SatelliteTableHead headers = {["Id", "Telemetry Timestamp", "Trigger Deorbit Burn", "Detonate"]} />
