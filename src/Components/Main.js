@@ -53,12 +53,16 @@ class Main extends Component {
       sortColumn: 'id',
       sortOrder: 'desc',
     };
+    this.updateSortColumn = this.updateSortColumn.bind(this)
+    this.handleSearch = this.handleSearch.bind(this)
+    this.updateInputValue = this.updateInputValue.bind(this)
   }
-    
-  componentWillMount() {
+  
+  fetchData() {
     var sort_order = this.state.sortOrder
     var attribute = this.state.sortColumn
     var search_term = this.state.searchInput
+    console.log("sort order: ", sort_order, "attribute: ", attribute, "search_term: ", search_term)
     
     var url = 'http://localhost:3000/graphql'
     var query = "{ barrels(order: " + sort_order + ", attribute: " + attribute +", search_term: "+ search_term + " ) {id, status, last_flavor_sensor_result, error_messages} satellites {id, telemetry_timestamp} }"
@@ -68,13 +72,17 @@ class Main extends Component {
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({ query: query }),
     })
-      .then(response => response.json())
-      .then(data => this.setState(
-        { barrels: data["data"]["barrels"],
-          satellites: data["data"]["satellites"]
-        }))
-      .then(console.log("barrels: ", this.state.barrels))
-      .then(console.log("satellites: ", this.state.satellites))
+    .then(response => response.json())
+    .then(data => this.setState(
+      { barrels: data["data"]["barrels"],
+        satellites: data["data"]["satellites"]
+      }))
+    .then(console.log("barrels: ", this.state.barrels))
+    .then(console.log("satellites: ", this.state.satellites))
+  }
+
+  componentWillMount() {
+    this.fetchData()
   };
   
   eachBarrel(barrel){
@@ -93,22 +101,26 @@ class Main extends Component {
     this.setState({
       searchInput: evt.target.value
     });
-    console.log("searchInput: ", this.state.searchInput)
+  }
+  
+  handleSearch(evt) {
+    this.fetchData()
   }
   
   updateSortColumn(attribute) {
     this.setState({
       sortColumn: attribute
     });
-    console.log("sortColumn: ", this.state.sortColumn)
+    this.fetchData()
   }
         
   render() {
     return (
       <Section>
-        <Input value={this.state.searchInput} onChange={evt => this.updateInputValue(evt)}/>
+      <Input value={ this.state.searchInput } onChange={ evt => this.updateInputValue(evt) }/>
+        <Button onClick={ evt => this.handleSearch(evt) }>Search</Button>
         <Button onClick={ evt => this.updateSortColumn("status") }>Sort by status</Button>
-        <Button onClick={ evt => this.updateSortColumn("time_since_last_update") }>Sort by time since last update</Button>
+        <Button onClick={ evt => this.updateSortColumn("last_updated_at") }>Sort by time since last update</Button>
         <Button onClick={ evt => this.updateSortColumn("error_messages") }>Sort by error_state</Button>
         <TableHead headers = {["Id", "Status", "Last Flavor Sensor Result", "Errors"]}/>
         <Table rows = { this.state.barrels.map(this.eachBarrel) } />
