@@ -48,6 +48,7 @@ class Main extends Component {
 
     this.state = {
       barrels: [],
+      filteredBarrels: [],
       satellites: [],
       searchInput: '',
       sortColumn: 'id',
@@ -64,7 +65,7 @@ class Main extends Component {
     var search_term = this.state.searchInput
     console.log("sort order: ", sort_order, "attribute: ", attribute, "search_term: ", search_term)
     
-    var url = 'http://localhost:3000/graphql'
+    var url = 'http://localhost:3001/graphql'
     var query = "{ barrels(order: " + sort_order + ", attribute: " + attribute +", search_term: "+ search_term + " ) {id, status, last_flavor_sensor_result, error_messages} satellites {id, telemetry_timestamp} }"
     
     fetch(url, {
@@ -75,6 +76,7 @@ class Main extends Component {
     .then(response => response.json())
     .then(data => this.setState(
       { barrels: data["data"]["barrels"],
+        filteredBarrels: data["data"]["barrels"],
         satellites: data["data"]["satellites"]
       }))
     .then(console.log("barrels: ", this.state.barrels))
@@ -87,8 +89,8 @@ class Main extends Component {
   
   eachBarrel(barrel){
     return <TableRow id = {barrel.id}
-                     status={ barrel.status } 
-                     last_flavor_sensor_result={ barrel.last_flavor_sensor_result} 
+                     status={ barrel.status }
+                     last_flavor_sensor_result={ barrel.last_flavor_sensor_result}
                      error_messages={ barrel.error_messages} />
   }
   
@@ -101,6 +103,13 @@ class Main extends Component {
     this.setState({
       searchInput: evt.target.value
     });
+    let filteredBarrels = this.state.barrels.filter( (barrel) => { 
+      let searchFields = barrel.last_flavor_sensor_result + barrel.error_messages[0] + barrel.status
+      let isMatch = searchFields.toUpperCase().indexOf(evt.target.value.toUpperCase())
+      console.log(isMatch)
+      return isMatch >= 0 })
+      
+    this.setState({ filteredBarrels: filteredBarrels })
   }
   
   handleSearch(evt) {
@@ -118,12 +127,11 @@ class Main extends Component {
     return (
       <Section>
       <Input value={ this.state.searchInput } onChange={ evt => this.updateInputValue(evt) }/>
-        <Button onClick={ evt => this.handleSearch(evt) }>Search</Button>
         <Button onClick={ evt => this.updateSortColumn("status") }>Sort by status</Button>
         <Button onClick={ evt => this.updateSortColumn("last_updated_at") }>Sort by time since last update</Button>
         <Button onClick={ evt => this.updateSortColumn("error_messages") }>Sort by error_state</Button>
         <TableHead headers = {["Id", "Status", "Last Flavor Sensor Result", "Errors"]}/>
-        <Table rows = { this.state.barrels.map(this.eachBarrel) } />
+        <Table rows = { this.state.filteredBarrels.map(this.eachBarrel) } />
         <SatelliteTableHead headers = {["Id", "Telemetry Timestamp", "Trigger Deorbit Burn", "Detonate"]} />
         <SatelliteTable rows = { this.state.satellites.map(this.eachSatellite) } />
       </Section>
