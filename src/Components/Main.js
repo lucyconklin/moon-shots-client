@@ -63,7 +63,6 @@ class Main extends Component {
     var sort_order = this.state.sortOrder
     var attribute = this.state.sortColumn
     var search_term = this.state.searchInput
-    console.log("sort order: ", sort_order, "attribute: ", attribute, "search_term: ", search_term)
     
     var url = 'http://localhost:3001/graphql'
     var query = "{ barrels(order: " + sort_order + ", attribute: " + attribute +", search_term: "+ search_term + " ) {id, status, last_flavor_sensor_result, error_messages} satellites {id, telemetry_timestamp} }"
@@ -78,9 +77,8 @@ class Main extends Component {
       { barrels: data["data"]["barrels"],
         filteredBarrels: data["data"]["barrels"],
         satellites: data["data"]["satellites"]
-      }))
-    .then(console.log("barrels: ", this.state.barrels))
-    .then(console.log("satellites: ", this.state.satellites))
+      }
+    ))
   }
 
   componentWillMount() {
@@ -106,7 +104,6 @@ class Main extends Component {
     let filteredBarrels = this.state.barrels.filter( (barrel) => { 
       let searchFields = barrel.last_flavor_sensor_result + barrel.error_messages[0] + barrel.status
       let isMatch = searchFields.toUpperCase().indexOf(evt.target.value.toUpperCase())
-      console.log(isMatch)
       return isMatch >= 0 })
       
     this.setState({ filteredBarrels: filteredBarrels })
