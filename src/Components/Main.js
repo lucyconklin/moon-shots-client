@@ -20,6 +20,14 @@ const Section = styled.section`
   margin: 20px auto;
 `
 
+const CheckedInformation = styled.section`
+  padding: 20px;
+  margin: 0px;
+  width: 80%;
+  margin: 20px auto;
+  border: 2px solid #47B9DF;
+`
+
 const Input = styled.input`
   font-size: 16px;
   background: #282828;
@@ -53,19 +61,18 @@ class Main extends Component {
       searchInput: '',
       sortColumn: 'id',
       sortOrder: 'desc',
+      checkedBarrels: {}
     };
     this.updateSortColumn = this.updateSortColumn.bind(this)
-    this.handleSearch = this.handleSearch.bind(this)
     this.updateInputValue = this.updateInputValue.bind(this)
   }
   
   fetchData() {
     var sort_order = this.state.sortOrder
     var attribute = this.state.sortColumn
-    var search_term = this.state.searchInput
     
     var url = 'http://localhost:3001/graphql'
-    var query = "{ barrels(order: " + sort_order + ", attribute: " + attribute +", search_term: "+ search_term + " ) {id, status, last_flavor_sensor_result, error_messages} satellites {id, telemetry_timestamp} }"
+    var query = "{ barrels(order: " + sort_order + ", attribute: " + attribute + " ) {id, status, last_flavor_sensor_result, error_messages} satellites {id, telemetry_timestamp} }"
     
     fetch(url, {
       method: 'POST',
@@ -85,16 +92,32 @@ class Main extends Component {
     this.fetchData()
   };
   
-  eachBarrel(barrel){
+  eachBarrel = (barrel) => {
     return <TableRow id = {barrel.id}
                      status={ barrel.status }
                      last_flavor_sensor_result={ barrel.last_flavor_sensor_result}
-                     error_messages={ barrel.error_messages} />
+                     error_messages={ barrel.error_messages}
+                     key={barrel.id}
+                     checkboxClick={ this.updateCheckedBarrels }
+                     checked={ this.state.checkedBarrels[barrel.id] }/>
+  }
+  
+  updateCheckedBarrels = (id) => {
+    let selectedBarrels = {...this.state.checkedBarrels}
+    // this.state.checkedBarrels[id.toString()] = 
+    if (selectedBarrels[id.toString()]) {
+      selectedBarrels[id.toString()] = false
+    } else {
+      selectedBarrels[id.toString()] = true
+    }
+    
+    this.setState({ checkedBarrels: selectedBarrels })
   }
   
   eachSatellite(satellite){
     return <SatelliteTableRow id = {satellite.id} 
-                     telemetry_timestamp = {satellite.telemetry_timestamp} />
+                     telemetry_timestamp = {satellite.telemetry_timestamp}
+                     key={satellite.id}/>
   }
   
   updateInputValue(evt) {
@@ -109,10 +132,6 @@ class Main extends Component {
     this.setState({ filteredBarrels: filteredBarrels })
   }
   
-  handleSearch(evt) {
-    this.fetchData()
-  }
-  
   updateSortColumn(attribute) {
     this.setState({
       sortColumn: attribute
@@ -123,6 +142,7 @@ class Main extends Component {
   render() {
     return (
       <Section>
+      <CheckedInformation> You have checked { Object.entries(this.state.checkedBarrels).filter( ([key, value]) => value ).length } barrels.</CheckedInformation>
       <Input value={ this.state.searchInput } onChange={ evt => this.updateInputValue(evt) }/>
         <Button onClick={ evt => this.updateSortColumn("status") }>Sort by status</Button>
         <Button onClick={ evt => this.updateSortColumn("last_updated_at") }>Sort by time since last update</Button>

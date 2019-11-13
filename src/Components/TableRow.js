@@ -12,23 +12,22 @@ const StyledTableData = styled.td`
   border: none;
 `
 
-class TableRow extends Component {
+const StyledTableCheckbox = styled.td`
+  padding: 8px 10px;
+  border: none;
+  text-align: center;
+`
 
-  constructor(props) {
-    super(props);
-  }
-  
-  
-  render() {
-    return(
-      <StyledTableRow>
-        <StyledTableData>{ this.props.id }</StyledTableData>
-        <StyledTableData>{ this.props.status }</StyledTableData>
-        <StyledTableData>{ this.props.last_flavor_sensor_result }</StyledTableData>
-        <StyledTableData>{ this.props.error_messages }</StyledTableData>
-      </StyledTableRow>
-    )
-  }
+const TableRow = (props) => {
+  return(
+    <StyledTableRow>
+      <StyledTableCheckbox><input type="checkbox" onClick={ () => props.checkboxClick(props.id) } checked={ props.checked } /></StyledTableCheckbox>
+      <StyledTableData>{ props.id }</StyledTableData>
+      <StyledTableData>{ props.status }</StyledTableData>
+      <StyledTableData>{ props.last_flavor_sensor_result }</StyledTableData>
+      <StyledTableData>{ props.error_messages }</StyledTableData>
+    </StyledTableRow>
+  )
 }
 
 export default TableRow;
